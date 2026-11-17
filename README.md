@@ -1,17 +1,22 @@
-# jsonplaceholder
+# My Flutter Learning Journey
 
-A new Flutter project.
+This is me when I'm learning Flutter and trying to understand how things actually work.
 
-## Getting Started
+Right now, I'm exploring APIs using JSONPlaceholder. Just experimenting, making mistakes, fixing bugs, and slowly figuring things out.
 
-This project is a starting point for a Flutter application.
+### What I'm learning
+- Fetching data from APIs
+- Understanding JSON
+- Working with HTTP requests
+- Async & await
+- Futures
+- Building reusable widgets
+- Handling API responses
 
-A few resources to get you started if this is your first Flutter project:
+### My goal
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+To understand Flutter beyond just making UI. I want to know how everything works behind the scenes, especially how applications communicate with APIs.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Nothing fancy. Just me learning, experimenting, and getting better.
+
+**One step at a time.**
