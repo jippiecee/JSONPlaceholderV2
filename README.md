@@ -19,4 +19,4 @@ To understand Flutter beyond just making UI. I want to know how everything works
 
 Nothing fancy. Just me learning, experimenting, and getting better.
 
-**One step at a time.**
+**Keep moving forward.**
