@@ -10,7 +10,7 @@ class AlbumWidget extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: ListTile(
-        leading: const Icon(Icons.photo_album, color: Colors.cyanAccent,),
+        leading: Icon(Icons.photo_album, color: Colors.cyanAccent,),
         title: Text(album.title),
         subtitle: Text('Album ${album.id} User : ${album.userId}'),
       ),

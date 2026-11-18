@@ -9,7 +9,6 @@ class PostWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.grey.shade200,
       elevation: 2,
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: ListTile(

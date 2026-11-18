@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
 
-/// Widget generik yang menangani 4 kondisi async:
-/// loading, error, empty, dan success (dengan pull-to-refresh).
-/// <T> = tipe model yang dipakai (Post, Comments, dst).
+// Kegunakan <T> adalah untuk mendefinisikan tipe data yang akan digunakan
 class AsyncDataView<T> extends StatefulWidget {
-  /// Fungsi untuk mengambil data dari API.
   final Future<List<T>> Function() onFetch;
-
-  /// Cara menampilkan SATU item.
   final Widget Function(BuildContext context, T item, int index) itemBuilder;
-
-  /// Nama data, dipakai di teks loading dan kosong.
   final String title;
 
   const AsyncDataView({
@@ -25,7 +18,7 @@ class AsyncDataView<T> extends StatefulWidget {
 }
 
 class _AsyncDataViewState<T> extends State<AsyncDataView<T>> {
-  /// Menyimpan "tiket" Future supaya tidak request ulang tiap rebuild.
+  // Variabel untuk menyimpan data yang akan ditampilkan
   late Future<List<T>> _future;
 
   @override
@@ -34,17 +27,15 @@ class _AsyncDataViewState<T> extends State<AsyncDataView<T>> {
     _loadData();
   }
 
+  // Fungsi untuk memuat data dari API
   void _loadData() {
     _future = widget.onFetch();
   }
 
   Future<void> _handleRefresh() async {
-    setState(_loadData);
-    try {
-      await _future;
-    } catch (_) {
-      // Error ditampilkan oleh FutureBuilder, jadi di sini diabaikan.
-    }
+    setState(() {
+      _loadData();
+    });
   }
 
   @override
@@ -52,52 +43,73 @@ class _AsyncDataViewState<T> extends State<AsyncDataView<T>> {
     return FutureBuilder<List<T>>(
       future: _future,
       builder: (context, snapshot) {
-        // 1. Loading
+        // 1. Loading State
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const CircularProgressIndicator(),
                 const SizedBox(height: 16),
-                Text('Memuat ${widget.title}...'),
+                Text('Memuat ${widget.title}'),
               ],
             ),
           );
         }
 
-        // 2. Error
+        // 2. Error State
         if (snapshot.hasError) {
           return Center(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error, size: 48),
+                const Icon(Icons.error, color: Colors.red, size: 48),
                 const SizedBox(height: 12),
                 Text('${snapshot.error}'),
                 const SizedBox(height: 12),
                 ElevatedButton(
                   onPressed: _handleRefresh,
-                  child: const Text('Coba lagi'),
+                  child: const Text('Refresh Page'),
                 ),
               ],
             ),
           );
         }
 
-        // 3. Empty
+        // 3. Empty State
         final items = snapshot.data ?? [];
         if (items.isEmpty) {
-          return Center(child: Text('${widget.title} kosong'));
+          return Center(child: Text('Data is empty ${widget.title}'));
         }
 
-        // 4. Success + pull-to-refresh
+        //4. Succes state with Pull to Refresh
+
         return RefreshIndicator(
           onRefresh: _handleRefresh,
-          child: ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) =>
-                widget.itemBuilder(context, items[index], index),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Total: ${items.length} ${widget.title}",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text('Tarik ke bawah untuk Refresh'),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    return widget.itemBuilder(context, items[index], index);
+                  },
+                ),
+              ),
+            ],
           ),
         );
       },
