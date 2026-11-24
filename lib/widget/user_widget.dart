@@ -1,231 +1,146 @@
 import 'package:flutter/material.dart';
 import 'package:jsonplaceholder/models/users.dart';
+import 'package:jsonplaceholder/theme/app_colors.dart';
+import 'package:jsonplaceholder/widget/app_card.dart';
 
 class UserWidget extends StatelessWidget {
   final Users user;
-  final VoidCallback? onTap;
-
-  const UserWidget({super.key, required this.user, this.onTap});
-
-  static const List<Color> _userColors = [
-    Color(0xFF006874),
-    Color(0xFF4A6267),
-    Color(0xFF525E7D),
-    Color(0xFF6B5778),
-    Color(0xFF7B5436),
-    Color(0xFF386A20),
-  ];
-
-  Color _colorForUser(int id) {
-    final index = (id.abs() - 1) % _userColors.length;
-    return _userColors[index];
-  }
-
-  String _initials(String name, String username) {
-    final source = name.trim().isNotEmpty ? name.trim() : username.trim();
-    if (source.isEmpty) return '#${user.id}';
-    final parts = source.split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
-    if (parts.length >= 2) {
-      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
-    }
-    return parts.first.substring(0, parts.first.length.clamp(1, 2)).toUpperCase();
-  }
+  const UserWidget({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final accentColor = _colorForUser(user.id);
-
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-      elevation: 0,
-      clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: colorScheme.outlineVariant),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 22,
-                    backgroundColor: accentColor,
-                    foregroundColor: Colors.white,
-                    child: Text(
-                      _initials(user.name, user.username),
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        color: Colors.white,
+              Container(
+                width: 50,
+                height: 50,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFFB07CE0), AppColors.users],
+                  ),
+                ),
+                child: Text(
+                  user.name[0],
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      user.name,
+                      style: const TextStyle(
+                        fontSize: 16.5,
                         fontWeight: FontWeight.w700,
+                        letterSpacing: -0.2,
+                        color: AppColors.ink,
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          user.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          '@${user.username}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: colorScheme.secondaryContainer,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      'ID #${user.id}',
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: colorScheme.onSecondaryContainer,
-                        fontWeight: FontWeight.w600,
+                    Text(
+                      '@${user.username}',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppColors.muted,
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              const SizedBox(height: 14),
-              Divider(
-                height: 1,
-                color: colorScheme.outlineVariant.withValues(alpha: 0.7),
-              ),
-              const SizedBox(height: 12),
-              _UserInfoRow(
-                icon: Icons.email_outlined,
-                label: 'Email',
-                value: user.email,
-                colorScheme: colorScheme,
-              ),
-              const SizedBox(height: 8),
-              _UserInfoRow(
-                icon: Icons.phone_outlined,
-                label: 'Phone',
-                value: user.phone,
-                colorScheme: colorScheme,
-              ),
-              const SizedBox(height: 8),
-              _UserInfoRow(
-                icon: Icons.language_outlined,
-                label: 'Website',
-                value: user.website,
-                colorScheme: colorScheme,
-              ),
-              const SizedBox(height: 8),
-              _UserInfoRow(
-                icon: Icons.location_on_outlined,
-                label: 'Address',
-                value: '${user.address.street}, ${user.address.city}',
-                colorScheme: colorScheme,
-              ),
-              const SizedBox(height: 8),
-              _UserInfoRow(
-                icon: Icons.business_outlined,
-                label: 'Company',
-                value: user.company.name,
-                colorScheme: colorScheme,
-              ),
-              if (user.company.catchPhrase.trim().isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHighest.withValues(
-                      alpha: 0.55,
+              Pill('#${user.id}', color: AppColors.users),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _InfoRow(icon: Icons.mail_outline, text: user.email),
+          _InfoRow(icon: Icons.phone_outlined, text: user.phone),
+          _InfoRow(icon: Icons.language, text: user.website),
+          _InfoRow(
+            icon: Icons.location_on_outlined,
+            text: '${user.address.street}, ${user.address.city}',
+          ),
+          const SizedBox(height: 4),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.bg,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.business_outlined,
+                      size: 16,
+                      color: AppColors.users,
                     ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    '"${user.company.catchPhrase}"',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      fontStyle: FontStyle.italic,
-                      color: colorScheme.onSurfaceVariant,
-                      height: 1.35,
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        user.company.name,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.ink,
+                        ),
+                      ),
                     ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  user.company.catchPhrase,
+                  style: const TextStyle(
+                    fontSize: 12.5,
+                    fontStyle: FontStyle.italic,
+                    color: AppColors.muted,
                   ),
                 ),
               ],
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 }
 
-class _UserInfoRow extends StatelessWidget {
+class _InfoRow extends StatelessWidget {
   final IconData icon;
-  final String label;
-  final String value;
-  final ColorScheme colorScheme;
-
-  const _UserInfoRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-    required this.colorScheme,
-  });
+  final String text;
+  const _InfoRow({required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(
-          icon,
-          size: 16,
-          color: colorScheme.onSurfaceVariant,
-        ),
-        const SizedBox(width: 8),
-        SizedBox(
-          width: 72,
-          child: Text(
-            label,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-              fontWeight: FontWeight.w600,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        children: [
+          IconTile(icon: icon, color: AppColors.users, size: 30),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 14, color: Color(0xFF374151)),
             ),
           ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurface,
-            ),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -10,7 +10,7 @@ class TodosTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AsyncDataView<Todos>(
-      title: 'Photos',
+      title: 'Todos',
       onFetch: ApiService.fetchTodos,
       itemBuilder: (context, todo, index) => TodosWidget(todo: todo),
     );

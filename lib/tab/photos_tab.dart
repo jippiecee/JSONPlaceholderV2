@@ -11,6 +11,8 @@ class PhotosTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return AsyncDataView<Photos>(
       title: 'Photos',
+      gridColumns: 2,
+      gridItemExtent: 224,
       onFetch: ApiService.fetchPhotos,
       itemBuilder: (context, photo, index) => PhotoWidget(photo: photo),
     );
